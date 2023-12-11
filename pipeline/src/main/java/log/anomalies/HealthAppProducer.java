@@ -46,14 +46,14 @@ public class HealthAppProducer {
         KafkaProducer<String, String> healthAppProducer = createKafkaProducer(configFilepath);
 
         try {
-            File health_app_file = new File(healthLogsFilepath);
-            FileReader health_app_fr = new FileReader(health_app_file);
-            BufferedReader health_app_br = new BufferedReader(health_app_fr);
+            File healthAppFile = new File(healthLogsFilepath);
+            FileReader healthAppFR = new FileReader(healthAppFile);
+            BufferedReader healthAppBR = new BufferedReader(healthAppFR);
             String line;
 
             int j = 0;
             // read in file, parse every log line and create JSON object
-            while ((line = health_app_br.readLine()) != null && j < 5) {
+            while ((line = healthAppBR.readLine()) != null && j < 5) {
                 String[] vals = line.split("\\|");
                 JSONObject logJSON = new JSONObject();
 
