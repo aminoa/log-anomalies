@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class HealthAppProducer {
+    // HealthApp log fields to be used as keys in JSON objects
     private static final String[] KEYS = {"Time", "Component", "PID", "Content"};
 
     public static void main(String[] args) {
@@ -17,7 +18,7 @@ public class HealthAppProducer {
         try {
             File health_app_file = new File(filepath);
             FileReader health_app_fr = new FileReader(health_app_file);
-            BufferedReader health_app_br = new BufferedReader((health_app_fr));
+            BufferedReader health_app_br = new BufferedReader(health_app_fr);
             String line;
 
             int j = 0;
