@@ -1,6 +1,6 @@
 package log.anomalies;
 
-public class HealthappProducer {
+public class HealthAppProducer {
     public static void main(String[] args) {
 
     }
