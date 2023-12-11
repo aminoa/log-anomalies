@@ -1,9 +1,10 @@
 package log.anomalies;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.*;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class HealthAppProducer {
+    private static final Logger log = LoggerFactory.getLogger(HealthAppProducer.class.getSimpleName());
     // HealthApp log fields to be used as keys in JSON objects
     private static final String[] KEYS = {"Time", "Component", "PID", "Content"};
 
@@ -43,6 +45,7 @@ public class HealthAppProducer {
     public static void main(String[] args) {
         String healthLogsFilepath = "src/main/resources/HealthApp.log";
         String configFilepath = "src/main/resources/kafka_config.txt";
+        String topic = "health_app";
         KafkaProducer<String, String> healthAppProducer = createKafkaProducer(configFilepath);
 
         try {
@@ -53,7 +56,7 @@ public class HealthAppProducer {
 
             int j = 0;
             // read in file, parse every log line and create JSON object
-            while ((line = healthAppBR.readLine()) != null && j < 5) {
+            while ((line = healthAppBR.readLine()) != null && j < 10) {
                 String[] vals = line.split("\\|");
                 JSONObject logJSON = new JSONObject();
 
@@ -63,13 +66,34 @@ public class HealthAppProducer {
                     logJSON.put(KEYS[i], val);
                     i++;
                 }
-                System.out.println(logJSON);
+                //  create and send producer record
+                ProducerRecord<String, String> producerRecord = new ProducerRecord<>(topic, logJSON.toString());
+
+                healthAppProducer.send(producerRecord, new Callback() {
+                    //executes when record is sent successfully, or throws exception
+                    @Override
+                    public void onCompletion(RecordMetadata metadata, Exception e) {
+                        if (e == null) {
+                            log.info("Received metadata:" +
+                                    "\nTopic: " + metadata.topic() +
+                                    "\nPartition: " + metadata.partition() +
+                                    "\nOffset: " + metadata.offset() +
+                                    "\nTimestamp: " + metadata.timestamp()
+                            );
+                        } else {
+                            log.error("Producer error", e);
+                        }
+                    }
+                });
                 j++;
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally{
+            // flush and close producer, producer.flush() to flush without closing
+            healthAppProducer.close();
         }
     }
 }
