@@ -54,14 +54,15 @@ public class HealthAppProducer {
             BufferedReader healthAppBR = new BufferedReader(healthAppFR);
             String line;
 
+            // TEMPORARY, only for testing purpose, will remove to read in full file when consumer is up and running
             int j = 0;
             // read in file, parse every log line and create JSON object
             while ((line = healthAppBR.readLine()) != null && j < 10) {
                 String[] vals = line.split("\\|");
                 JSONObject logJSON = new JSONObject();
 
-                int i = 0;
                 // iterate through vals array, use KEYS array to put key:value pairs into logJSON object
+                int i = 0;
                 for (String val : vals) {
                     logJSON.put(KEYS[i], val);
                     i++;
@@ -81,7 +82,7 @@ public class HealthAppProducer {
                                     "\nTimestamp: " + metadata.timestamp()
                             );
                         } else {
-                            log.error("Producer error", e);
+                            log.error("Producer error: ", e);
                         }
                     }
                 });
