@@ -1,6 +1,5 @@
 package log.anomalies;
 
-import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.*;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -53,7 +52,6 @@ public class HealthAppProducer {
             FileReader healthAppFR = new FileReader(healthAppFile);
             BufferedReader healthAppBR = new BufferedReader(healthAppFR);
             String line;
-
 
             // read in file, parse every log line and create JSON object
             while ((line = healthAppBR.readLine()) != null) {
