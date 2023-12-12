@@ -54,10 +54,9 @@ public class HealthAppProducer {
             BufferedReader healthAppBR = new BufferedReader(healthAppFR);
             String line;
 
-            // TEMPORARY, only for testing purpose, will remove to read in full file when consumer is up and running
-            int j = 0;
+
             // read in file, parse every log line and create JSON object
-            while ((line = healthAppBR.readLine()) != null && j < 10) {
+            while ((line = healthAppBR.readLine()) != null) {
                 String[] vals = line.split("\\|");
                 JSONObject logJSON = new JSONObject();
 
@@ -86,11 +85,12 @@ public class HealthAppProducer {
                         }
                     }
                 });
-                j++;
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         } finally{
             // flush and close producer, producer.flush() to flush without closing
