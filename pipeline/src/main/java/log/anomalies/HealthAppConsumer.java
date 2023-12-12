@@ -79,10 +79,10 @@ public class HealthAppConsumer {
         //Create open search client
         RestHighLevelClient openSearchClient = createOpenSearchClient(bonsaiConfigFilepath);
         // Create Kafka consumer
-        KafkaConsumer<String, String> openSearchConsumer = createKafkaConsumer(kafkaConfigFilepath, groupID);
+        KafkaConsumer<String, String> healthAppConsumer = createKafkaConsumer(kafkaConfigFilepath, groupID);
 
         //Create index if does not exist. Try block will close openSearch client/consumer on success/fail
-        try(openSearchClient; openSearchConsumer) {
+        try(openSearchClient; healthAppConsumer) {
             Boolean indexExists = openSearchClient.indices()
                     .exists(new GetIndexRequest(healthAppIndex), RequestOptions.DEFAULT);
             if (!indexExists) {
@@ -98,7 +98,7 @@ public class HealthAppConsumer {
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
                     log.info("Shutdown detected, exiting with consumer.wakeup()");
-                    openSearchConsumer.wakeup();
+                    healthAppConsumer.wakeup();
                     //join main thread to allow execution of its code
                     try {
                         mainThread.join();
@@ -109,12 +109,12 @@ public class HealthAppConsumer {
             });
 
             //subscribe to topic
-            openSearchConsumer.subscribe(Collections.singleton(topic));
+            healthAppConsumer.subscribe(Collections.singleton(topic));
 
             //poll for data
             while (true) {
                 log.info("Polling");
-                ConsumerRecords<String, String> records = openSearchConsumer.poll(Duration.ofMillis(3000));
+                ConsumerRecords<String, String> records = healthAppConsumer.poll(Duration.ofMillis(3000));
 
                 int recordCount = records.count();
                 log.info("Received " + recordCount + " record(s)");
@@ -151,7 +151,7 @@ public class HealthAppConsumer {
             log.error("Unexpected consumer error: ", e);
         } finally {
             //close client/consumer and commit offsets
-            openSearchConsumer.close();
+            healthAppConsumer.close();
             openSearchClient.close();
         }
     }
