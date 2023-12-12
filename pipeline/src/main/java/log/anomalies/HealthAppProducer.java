@@ -87,11 +87,11 @@ public class HealthAppProducer {
                 });
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error("File not found", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("IO exception", e);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Unexpected error", e);
         } finally{
             // flush and close producer, producer.flush() to flush without closing
             healthAppProducer.close();

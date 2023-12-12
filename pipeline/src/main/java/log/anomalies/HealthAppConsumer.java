@@ -134,7 +134,7 @@ public class HealthAppConsumer {
                         // add to bulk request
                         bulkRequest.add(indexRequest);
                     } catch(Exception e){
-                        log.info("Record failed to upload: ", e);
+                        log.error("Record bulk append failed: ", e);
                     }
                 }
 
