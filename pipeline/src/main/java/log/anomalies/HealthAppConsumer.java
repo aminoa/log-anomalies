@@ -18,7 +18,9 @@ import org.opensearch.client.RestClient;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.client.indices.CreateIndexRequest;
 import org.opensearch.client.indices.GetIndexRequest;
-import org.opensearch.common.xcontent.XContentType;
+import org.opensearch.common.xcontent.XContentFactory;
+import org.opensearch.core.xcontent.XContentBuilder;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +76,7 @@ public class HealthAppConsumer {
         String kafkaConfigFilepath = "src/main/resources/kafka_config.txt";
         String topic = "health_app";
         String groupID = "health_app_1";
-        String healthAppIndex = "health_logs";
+        String healthAppIndex = "health_logs_test";
 
         //Create open search client
         RestHighLevelClient openSearchClient = createOpenSearchClient(bonsaiConfigFilepath);
@@ -126,9 +128,19 @@ public class HealthAppConsumer {
                         // create ID based on kafka metadata for idempotent insertions
                         String id = record.topic() + "_" + record.partition() + "_" + record.offset();
 
-                        // create upload request
+                        // create upload request. Builder defines key:values pairs to be inserted under source field
+                        JSONObject logJSON = new JSONObject(record.value().toString());
+                        XContentBuilder builder = XContentFactory.jsonBuilder();
+                        builder.startObject();
+                        {
+                            builder.field("Time", logJSON.get("Time"));
+                            builder.field("Component", logJSON.get("Component"));
+                            builder.field("PID", logJSON.get("PID"));
+                            builder.field("Content", logJSON.get("Content"));
+                        }
+                        builder.endObject();
                         IndexRequest indexRequest = new IndexRequest(healthAppIndex)
-                                .source(record.value(), XContentType.JSON)
+                                .source(builder)
                                 .id(id);
 
                         // add to bulk request
