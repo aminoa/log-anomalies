@@ -15,7 +15,7 @@ import java.util.Properties;
 public class HealthAppProducer {
     private static final Logger log = LoggerFactory.getLogger(HealthAppProducer.class.getSimpleName());
     // HealthApp log fields to be used as keys in JSON objects
-    private static final String[] KEYS = {"Time", "Component", "PID", "Content"};
+    private static final String[] KEYS = {"Time", "Component", "PID", "Content", "EventID", "EventTemplate"};
 
     // Method for creating and returning Kafka producer
     private static KafkaProducer<String, String> createKafkaProducer(String configFilepath){
@@ -61,6 +61,9 @@ public class HealthAppProducer {
                 // iterate through vals array, use KEYS array to put key:value pairs into logJSON object
                 int i = 0;
                 for (String val : vals) {
+                    // a few entries have extra fields, ignoring extra fields with break clause
+                    if(i > 3) { break; }
+
                     logJSON.put(KEYS[i], val);
                     i++;
                 }
