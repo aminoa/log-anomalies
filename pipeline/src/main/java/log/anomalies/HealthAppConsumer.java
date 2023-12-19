@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Properties;
 
 public class HealthAppConsumer {
@@ -88,7 +89,7 @@ public class HealthAppConsumer {
         String kafkaConfigFilepath = "src/main/resources/kafka_config.txt";
         String topic = "health_app";
         String groupID = "health_app_1";
-        String healthAppIndex = "health_logs_test";
+        String healthAppIndex = "health_time_test";
 
         //Create open search client
         RestHighLevelClient openSearchClient = createOpenSearchClient(bonsaiConfigFilepath);
@@ -139,7 +140,7 @@ public class HealthAppConsumer {
                         builder.startObject();
                         {
                             builder.field("Time", logJSON.get("Time"));
-                            builder.field("Component", logJSON.get("Component"));
+                            builder.timeField("Component", logJSON.get("Component"));
                             builder.field("PID", logJSON.get("PID"));
                             builder.field("Content", logJSON.get("Content"));
                         }
