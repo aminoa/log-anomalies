@@ -71,6 +71,18 @@ public class HealthAppConsumer {
         return new KafkaConsumer<>(props);
     }
 
+    private static void getOrCreateIndex(RestHighLevelClient openSearchClient, KafkaConsumer healthAppConsumer, String index) throws IOException {
+        Boolean indexExists = openSearchClient.indices()
+                .exists(new GetIndexRequest(index), RequestOptions.DEFAULT);
+        if (!indexExists) {
+            CreateIndexRequest createIndexRequest = new CreateIndexRequest(index);
+            openSearchClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+            log.info("HealthApp index created");
+        } else {
+            log.info("HealthApp index already exists");
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         String bonsaiConfigFilepath = "src/main/resources/bonsai_config.txt";
         String kafkaConfigFilepath = "src/main/resources/kafka_config.txt";
@@ -83,17 +95,10 @@ public class HealthAppConsumer {
         // Create Kafka consumer
         KafkaConsumer<String, String> healthAppConsumer = createKafkaConsumer(kafkaConfigFilepath, groupID);
 
-        //Create index if does not exist. Try block will close openSearch client/consumer on success/fail
+                //Try block will close openSearch client/consumer on success/fail
         try(openSearchClient; healthAppConsumer) {
-            Boolean indexExists = openSearchClient.indices()
-                    .exists(new GetIndexRequest(healthAppIndex), RequestOptions.DEFAULT);
-            if (!indexExists) {
-                CreateIndexRequest createIndexRequest = new CreateIndexRequest(healthAppIndex);
-                openSearchClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
-                log.info("HealthApp index created");
-            } else {
-                log.info("HealthApp index already exists");
-            }
+            //Create index if does not exist
+            getOrCreateIndex(openSearchClient, healthAppConsumer, healthAppIndex);
 
             //add consumer shutdown hook for graceful shutdown, will throw exception within while loop
             final Thread mainThread = Thread.currentThread();
