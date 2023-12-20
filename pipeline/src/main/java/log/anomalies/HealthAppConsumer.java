@@ -98,7 +98,7 @@ public class HealthAppConsumer {
                 //Try block will close openSearch client/consumer on success/fail
         try(openSearchClient; healthAppConsumer) {
             //Create index if does not exist
-            getOrCreateIndex(openSearchClient, healthAppConsumer, healthAppIndex);
+            getOrCreateIndex(openSearchClient, healthAppIndex);
 
             //add consumer shutdown hook for graceful shutdown, will throw exception within while loop
             final Thread mainThread = Thread.currentThread();
