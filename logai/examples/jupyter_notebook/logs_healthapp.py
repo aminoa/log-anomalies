@@ -29,7 +29,7 @@ def setup_anomalies(log_file):
     print("Starting logai...")
     # Loading Data
     #File Configuration
-    filepath = os.path.join(".","examples", "datasets", log_file) # Point to the target HealthApp.log dataset
+    filepath =log_file # Point to the target HealthApp.log dataset
 
     dataset_name = "HealthApp"
     data_loader = OpenSetDataLoader(
