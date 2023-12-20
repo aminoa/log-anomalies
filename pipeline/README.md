@@ -1,22 +1,22 @@
 ## Pipeline Folder
 
 The pipeline folder contains a gradle project with 4 classes:
-[BonsaiConfig](#bonsaiconfig), [KafkaConfig](#KafkaConfig), [HealthAppConsumer](#KafkaConfig), and [HealthAppProducer](#HealthAppProducer). 
+[BonsaiConfig](#bonsaiconfig), [KafkaConfig](#kafkaconfig), [HealthAppConsumer](#HealthAppConsumer), and [HealthAppProducer](#HealthAppProducer). 
 The purpose of the project is to send health app log entries to a Kafka cluster
 using the HealthAppProducer class, and then process the messages
 and insert them into a Bonsai Open Search database using the HealthAppConsumer class.
 
-####BonsaiConfig
+#### BonsaiConfig
 
 used for parsing a text file containing Bonsai credentials,
 used for avoiding exposing secrets in plain text.
 
-####KafkaConfig
+#### KafkaConfig
 
 similar to BonsaiConfig, parses a Kafka config file and stores
 secrets in private attributes to avoid exposing them in plain text.
 
-####HealthAppProducer
+#### HealthAppProducer
 
 Contains two private attributes: a log object, and a string
 of arrays that includes all fields from the health app log files.
@@ -33,5 +33,5 @@ increased to 32kb so that the producer batches messages targeting the same parti
 by default.
 
 
-####HealthAppConsumer 
+#### HealthAppConsumer 
 
