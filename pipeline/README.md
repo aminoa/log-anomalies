@@ -1,14 +1,37 @@
-# Pipeline Folder
+## Pipeline Folder
 
 The pipeline folder contains a gradle project with 4 classes:
-BonsaiConfig, KafkaConfig, HealthAppConsumer, and HealthAppProducer. 
+[BonsaiConfig](#bonsaiconfig), [KafkaConfig](#KafkaConfig), [HealthAppConsumer](#KafkaConfig), and [HealthAppProducer](#HealthAppProducer). 
 The purpose of the project is to send health app log entries to a Kafka cluster
 using the HealthAppProducer class, and then process the messages
-for insertion into a Bonsai Open Search database using the HealthAppConsumer class.
+and insert them into a Bonsai Open Search database using the HealthAppConsumer class.
 
-BonsaiConfig: used for parsing a text file containing Bonsai credentials,
+####BonsaiConfig
+
+used for parsing a text file containing Bonsai credentials,
 used for avoiding exposing secrets in plain text.
 
-KafkaConfig: similar to BonsaiConfig, parses a Kafka config file and stores
+####KafkaConfig
+
+similar to BonsaiConfig, parses a Kafka config file and stores
 secrets in private attributes to avoid exposing them in plain text.
+
+####HealthAppProducer
+
+Contains two private attributes: a log object, and a string
+of arrays that includes all fields from the health app log files.
+
+The createKafkaProducer method configures and returns a Kafka producer.
+It first reads in the Kafka credentials using the KafkaConfig class
+and uses them to establish a connection with our Upstash.io Kafka cluster.
+Both key and values serializers are set as Strings, and the producer is then
+configured to compress and batch messages to optimize throughput. The messages
+are compressed using the snappy algorithm, which has historically been championed
+by Kafka, though LZ4 would be an equally appropriate choice. “LINGER_MS_CONFIG”
+is set to 20, so that message batches are only sent every 20ms, and the batch size
+increased to 32kb so that the producer batches messages targeting the same partition
+by default.
+
+
+####HealthAppConsumer 
 
