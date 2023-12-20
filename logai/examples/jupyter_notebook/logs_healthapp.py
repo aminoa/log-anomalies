@@ -29,7 +29,7 @@ def setup_anomalies(log_file):
     print("Starting logai...")
     # Loading Data
     #File Configuration
-    filepath = os.path.join("..", "datasets", log_file) # Point to the target HealthApp.log dataset
+    filepath = os.path.join(".","examples", "datasets", log_file) # Point to the target HealthApp.log dataset
 
     dataset_name = "HealthApp"
     data_loader = OpenSetDataLoader(
@@ -193,15 +193,17 @@ def get_semantic(logrecord, parsed_loglines, attributes):
 
     return anomalies
 
-def main():
-    parsed_loglines, parsed_result, attributes, logrecord, loglines = setup_anomalies("HealthApp_2000.log")
+def main(logfile_name):
+    parsed_loglines, parsed_result, attributes, logrecord, loglines = setup_anomalies(logfile_name)
     time_res = get_time_series(logrecord, parsed_result, attributes)
     sem_res = get_semantic(logrecord, parsed_loglines, attributes)
 
-    # print(time_res)
-    # print(sem_res)
+    # # print(time_res)
+    # # print(sem_res)
 
-    print(loglines.iloc[sem_res.index][:5])
-    print(attributes.iloc[sem_res.index][:5])
+    # print(loglines.iloc[sem_res.index][:5])
+    # print(attributes.iloc[sem_res.index][:5])
 
-main()
+    return loglines, attributes, time_res, sem_res
+
+# main()
