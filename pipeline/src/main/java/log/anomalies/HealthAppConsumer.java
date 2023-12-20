@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Properties;
 
 public class HealthAppConsumer {
