@@ -30,7 +30,9 @@ are compressed using the snappy algorithm, which has historically been champione
 by Kafka, though LZ4 would be an equally appropriate choice. “LINGER_MS_CONFIG”
 is set to 20, so that message batches are only sent every 20ms, and the batch size
 increased to 32kb so that the producer batches messages targeting the same partition
-by default.
+by default. A null key is used so that the messages are sent round robin, which further
+optimizes throughput. There is no need to use keys to preserve any order, as the timestamps
+are assumed to be accurate.
 
 The main method first initializes variables representing the config filepaths and the
 topic which the producer will write to. A producer is then initialized using the
