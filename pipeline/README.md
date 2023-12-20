@@ -1,7 +1,7 @@
 ## Pipeline Folder
 
 The pipeline folder contains a gradle project with 4 classes:
-[BonsaiConfig](#bonsaiconfig), [KafkaConfig](#kafkaconfig), [HealthAppConsumer](#HealthAppConsumer), and [HealthAppProducer](#HealthAppProducer). 
+[BonsaiConfig](#BonsaiConfig), [KafkaConfig](#KafkaConfig), [HealthAppConsumer](#HealthAppConsumer), and [HealthAppProducer](#HealthAppProducer). 
 The purpose of the project is to send health app log entries to a Kafka cluster
 using the HealthAppProducer class, and then process the messages
 and insert them into a Bonsai Open Search database using the HealthAppConsumer class.
@@ -31,6 +31,17 @@ by Kafka, though LZ4 would be an equally appropriate choice. “LINGER_MS_CONFIG
 is set to 20, so that message batches are only sent every 20ms, and the batch size
 increased to 32kb so that the producer batches messages targeting the same partition
 by default.
+
+The main method first initializes variables representing the config filepaths and the
+topic which the producer will write to. A producer is then initialized using the
+createKafkaProducer method described above. A log file is read in to simulate an API call
+that would read streaming log information in an enterprise program. Each entry is used
+to initialize a JSON object. Note that about a dozen entries out of over 250k included
+extra fields, and these are ignored in this case as such a small number of affected entries
+would not have a significant impact on the logAI models. The log JSON object is then used
+to initialize a producer record, which is sent to the Kafka cluster. The onCompletion method
+is overridden to log record data on successful sends, as well as to log any failures. The producer
+is closed in a finally block in order to ensure that it is correctly flushed and shut down.
 
 
 #### HealthAppConsumer 
