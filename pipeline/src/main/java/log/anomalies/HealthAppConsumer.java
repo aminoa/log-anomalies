@@ -71,7 +71,7 @@ public class HealthAppConsumer {
         return new KafkaConsumer<>(props);
     }
 
-    private static void getOrCreateIndex(RestHighLevelClient openSearchClient, KafkaConsumer healthAppConsumer, String index) throws IOException {
+    private static void getOrCreateIndex(RestHighLevelClient openSearchClient, String index) throws IOException {
         Boolean indexExists = openSearchClient.indices()
                 .exists(new GetIndexRequest(index), RequestOptions.DEFAULT);
         if (!indexExists) {
