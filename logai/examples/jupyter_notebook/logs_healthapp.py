@@ -78,7 +78,7 @@ def setup_anomalies(log_file):
 
     print("Parsed data...")
 
-    return parsed_loglines, parsed_result, attributes, logrecord
+    return parsed_loglines, parsed_result, attributes, logrecord, loglines
 
 def get_time_series(logrecord, parsed_result, attributes):
     print("Start time series...")
@@ -190,14 +190,18 @@ def get_semantic(logrecord, parsed_loglines, attributes):
 
     print("Semantic, got anomalies...")
 
+
     return anomalies
 
 def main():
-    parsed_loglines, parsed_result, attributes, logrecord = setup_anomalies("HealthApp_2000.log")
+    parsed_loglines, parsed_result, attributes, logrecord, loglines = setup_anomalies("HealthApp_2000.log")
     time_res = get_time_series(logrecord, parsed_result, attributes)
     sem_res = get_semantic(logrecord, parsed_loglines, attributes)
 
-    print(time_res)
-    print(sem_res)
+    # print(time_res)
+    # print(sem_res)
+
+    print(loglines.iloc[sem_res.index][:5])
+    print(attributes.iloc[sem_res.index][:5])
 
 main()
