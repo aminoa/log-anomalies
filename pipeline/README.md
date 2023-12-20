@@ -8,8 +8,8 @@ and insert them into a Bonsai Open Search database using the HealthAppConsumer c
 
 ### BonsaiConfig
 
-used for parsing a text file containing Bonsai credentials,
-used for avoiding exposing secrets in plain text.
+Parses a text file containing Bonsai credentials,
+used for avoiding exposing secrets in plain text. Stores credentials as a private attribute
 
 ### KafkaConfig
 
