@@ -6,17 +6,17 @@ The purpose of the project is to send health app log entries to a Kafka cluster
 using the HealthAppProducer class, and then process the messages
 and insert them into a Bonsai Open Search database using the HealthAppConsumer class.
 
-#### BonsaiConfig
+### BonsaiConfig
 
 used for parsing a text file containing Bonsai credentials,
 used for avoiding exposing secrets in plain text.
 
-#### KafkaConfig
+### KafkaConfig
 
 similar to BonsaiConfig, parses a Kafka config file and stores
 secrets in private attributes to avoid exposing them in plain text.
 
-#### HealthAppProducer
+### HealthAppProducer
 
 Contains two private attributes: a log object, and a string
 of arrays that includes all fields from the health app log files.
@@ -44,5 +44,5 @@ is overridden to log record data on successful sends, as well as to log any fail
 is closed in a finally block in order to ensure that it is correctly flushed and shut down.
 
 
-#### HealthAppConsumer 
+### HealthAppConsumer 
 
