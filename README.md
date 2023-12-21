@@ -6,6 +6,6 @@ This is the final project for CS-GY 6513.
 
 The relevant files for the Logai anomaly detection are found under logai/examples/juypter_notebook/, specifically logs_healthapp.py and logs_healthapp.ipynb
 
-## Pipelines
+## Pipeline
 
-To read more about pipelines, reference the README [here](./pipeline/README.md)
+To read more about the Kafka/Bonsai pipeline, reference the README [here](./pipeline/README.md)
